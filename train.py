@@ -4,9 +4,8 @@ import torch
 import random
 import json
 import numpy as np
-from torch.utils.data import DataLoader, Subset
+from torch.utils.data import DataLoader
 from transformers import AdamW, BertConfig, get_scheduler
-from transformers.utils.logging import set_verbosity_info, enable_propagation
 from dataset import JSONDataset, JSONDataCollator
 from model import HAETAE
 from transformers import BertTokenizer
