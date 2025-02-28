@@ -253,12 +253,6 @@ class JSONDataset(Dataset):
 
         self.data = create_data(path, path_is=path_is, sample_num=sample_num, pretraining_path=pretraining_path)
 
-    # def _serialize(self, json_obj):
-    #     token_ids = self.tokenizer.encode(str(json_obj), add_special_tokens=False)
-    #     tokenized = self.tokenizer.convert_ids_to_tokens(token_ids)
-    #     tokenized = [token for token in tokenized if token != "'"]
-    #     return " ".join(tokenized)
-
     def _serialize(self, json_obj):
         """
         Serialize the JSON object with clear hierarchical key representation.
@@ -320,70 +314,6 @@ class JSONDataset(Dataset):
                 serialized.append(",")
         return " ".join(serialized)
     
-
-    # def _find_key_positions(self, serialized, json_obj, parent_key=""):
-    #     """
-    #     Find token indices corresponding to keys in the tokenized serialized string, including handling of `|`.
-    #     """
-    #     tokenized = self.tokenizer(
-    #         serialized,
-    #         max_length=self.max_length,
-    #         truncation=True,
-    #         return_tensors="pt"
-    #     )
-    #     input_ids = tokenized["input_ids"].squeeze(0).tolist()
-    #     tokenized_serialized = self.tokenizer.convert_ids_to_tokens(input_ids)
-
-    #     key_positions = {}
-    #     current_position = 1  # Start after [CLS]
-
-    #     def recurse_json(obj, parent_key=""):
-    #         """
-    #         Recursively process JSON to find token positions.
-    #         """
-    #         nonlocal current_position
-    #         if isinstance(obj, dict):
-    #             if self.version != 'vanilla':
-    #                 current_position += 1  # '{' token
-
-    #             for key, value in obj.items():
-    #                 full_key = f"{parent_key}.{key}" if parent_key else key
-    #                 tokenized_key = self.tokenizer.tokenize(key)
-
-    #                 key_start_pos = _find_token_indices(tokenized_serialized, tokenized_key, current_position)
-    #                 if key_start_pos is not None:
-    #                     key_positions[full_key] = key_start_pos
-
-    #                 current_position = key_start_pos[-1] + 2 if key_start_pos else current_position + len(tokenized_key) + 2  # Account for `:` and space tokens
-
-    #                 recurse_json(value, full_key)
-    #                 current_position += 1  # `,` or `}` token
-
-    #             if self.version != 'vanilla':
-    #                 current_position += 1  # '}' token
-
-    #         elif isinstance(obj, list):
-    #             current_position += 1  # '[' token
-    #             for i, element in enumerate(obj):
-    #                 recurse_json(element, f"{parent_key}[{i}]")
-    #             current_position += 1  # ']' token
-
-    #         elif isinstance(obj, str):
-    #             current_position += len(self.tokenizer.tokenize(obj))
-    #         elif isinstance(obj, (int, float, bool, type(None))):
-    #             current_position += len(self.tokenizer.tokenize(str(obj)))
-
-    #     def _find_token_indices(sequence, tokens, start_index):
-    #         """
-    #         Find indices of tokens within sequence from start_index.
-    #         """
-    #         for i in range(start_index, len(sequence) - len(tokens) + 1):
-    #             if sequence[i : i + len(tokens)] == tokens:
-    #                 return list(range(i, i + len(tokens)))
-    #         return None
-
-    #     recurse_json(json_obj)
-    #     return key_positions
 
     def _find_key_positions(self, serialized, json_obj, parent_key=""):
         tokenized = self.tokenizer(
