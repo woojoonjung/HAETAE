@@ -6,7 +6,6 @@ requirements for training and experiment is as followed
   tensorboard \
   pandas \
   scikit-learn \
-  fasttext \
   numpy==1.26.4
    
 #### Training
