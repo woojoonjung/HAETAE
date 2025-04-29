@@ -33,11 +33,11 @@ class HAETAE(BertForMaskedLM):
             # In case your trained model is .safetensor,
             # state_dict = load_file(os.path.join(model_path, "model.safetensors"))
             # self.load_state_dict(state_dict, strict=False)
-            # print(f"Pre-trained JSONBERT loaded from {model_path}")
+            # print(f"Pre-trained HAETAE loaded from {model_path}")
             model_file = os.path.join(model_path, "pytorch_model.bin")
             state_dict = torch.load(model_file, map_location="cpu")
             self.load_state_dict(state_dict, strict=False)
-            print(f"Pre-trained JSONBERT loaded from {model_path}")
+            print(f"Pre-trained HAETAE loaded from {model_path}")
         else:
             # Load base BERT weights
             pretrained_bert = BertForMaskedLM.from_pretrained("bert-base-uncased")
