@@ -19,7 +19,7 @@ To train the model, run the train.py script.
 For example :
 > python train.py \
   --data_path ./data/pretraining_data_movie.jsonl  \
-  --output_dir ./models/movie_complete
+  --output_dir ./models/movie_haetae
 
 ### Experiment
 We uploaded a sample test data consisted of multi-lingual json objects and a jupyter notebook file for masked prediction experiment.
