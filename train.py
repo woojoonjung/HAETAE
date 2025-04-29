@@ -7,7 +7,7 @@ import numpy as np
 from torch.utils.data import DataLoader
 from transformers import AdamW, BertConfig, get_scheduler
 from dataset import JSONDataset, JSONDataCollator
-from model import HAETAE
+from refined_model import HAETAE
 from transformers import BertTokenizer
 from tqdm import tqdm
 from torch.utils.tensorboard import SummaryWriter
@@ -135,7 +135,7 @@ def train_model(args):
                 centroid_alignment_loss = centroid_alignment_loss / args.gradient_accumulation_steps
                 mlm_loss.backward(retain_graph=compute_alignment_loss)
                 centroid_alignment_loss.backward()
-                loss = centroid_alignment_loss + model.lambda_align * centroid_alignment_loss
+                loss = mlm_loss + centroid_alignment_loss
             else:
                 loss = mlm_loss / args.gradient_accumulation_steps
                 loss.backward()

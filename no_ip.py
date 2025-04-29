@@ -7,7 +7,7 @@ from safetensors.torch import load_file
 
 
 class HAETAE_NEWLOSS(BertForMaskedLM):
-    def __init__(self, config, tokenizer, model_path=None, lambda_align=0.4):
+    def __init__(self, config, tokenizer, model_path=None):
         super(HAETAE_NEWLOSS, self).__init__(config)
         self.tokenizer = tokenizer
 
@@ -21,9 +21,14 @@ class HAETAE_NEWLOSS(BertForMaskedLM):
 
         # Load pre-trained weights if provided
         if model_path:
-            state_dict = load_file(os.path.join(model_path, "model.safetensors"))
+            # In case your trained model is .safetensor,
+            # state_dict = load_file(os.path.join(model_path, "model.safetensors"))
+            # self.load_state_dict(state_dict, strict=False)
+            # print(f"Pre-trained JSONBERT loaded from {model_path}")
+            model_file = os.path.join(model_path, "pytorch_model.bin")
+            state_dict = torch.load(model_file, map_location="cpu")
             self.load_state_dict(state_dict, strict=False)
-            print(f"Pre-trained HAETAE_NEWLOSS loaded from {model_path}")
+            print(f"Pre-trained JSONBERT loaded from {model_path}")
         else:
             pretrained_bert = BertForMaskedLM.from_pretrained("bert-base-uncased")
             self.bert = pretrained_bert.bert
@@ -34,9 +39,6 @@ class HAETAE_NEWLOSS(BertForMaskedLM):
 
         # Dictionary to store contextual embeddings for centroid loss
         self.key_to_contextual_embeddings = {}
-
-        # Loss weight
-        self.lambda_align = lambda_align
 
     def _replace_key_embeddings(self, input_ids, key_positions, sequence_output):
         """
@@ -90,10 +92,10 @@ class HAETAE_NEWLOSS(BertForMaskedLM):
                 # Retrieve key embedding without creating a new tensor
                 key_embedding = self.layer_norm(self.key_embedding.weight[key_token_id].unsqueeze(0))
 
-                # Compute cosine similarity loss
-                similarity = F.cosine_similarity(centroid, key_embedding, dim=-1)
-                loss = 1 - similarity.mean()
-
+                # Compute Euclidean distance loss
+                distance = F.pairwise_distance(centroid, key_embedding, p=2)  # p=2 for Euclidean
+                loss = distance.mean()
+                
                 total_loss = total_loss + loss
                 cnt += 1
 
@@ -136,7 +138,7 @@ class HAETAE_NEWLOSS(BertForMaskedLM):
         if compute_alignment_loss:
             centroid_alignment_loss = self.compute_centroid_alignment_loss()
 
-        loss = mlm_loss + self.lambda_align * centroid_alignment_loss
+        loss = mlm_loss + centroid_alignment_loss
 
         return {
             "loss": loss, 

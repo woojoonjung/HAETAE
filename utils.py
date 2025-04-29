@@ -137,7 +137,7 @@ def tokenize_table(entry, model, tokenizer):
         ).to(device)
         return inputs, tokenized_table
     else:
-        serialized = _serialize_rough(entry, tokenizer)
+        serialized = _serialize_vanilla(entry, tokenizer)
         tokenized_table = tokenizer.tokenize(serialized)[:512]
         inputs = tokenizer(serialized, padding="max_length", truncation=True, return_tensors="pt").to(device)
         return inputs, tokenized_table
