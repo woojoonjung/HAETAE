@@ -1,5 +1,7 @@
 # HAETAE
 
+This code is the official implementation of our SIGIR'25 paper: HAETAE: In-domain Table Pretraining with Header Anchoring.
+
 requirements for training and experiment is as followed
 > torch \
   transformers \
@@ -8,7 +10,7 @@ requirements for training and experiment is as followed
   scikit-learn \
   numpy==1.26.4
    
-#### Training
+### Training
 The datasets we used in training can be downloaded from https://webdatacommons.org/structureddata/schemaorgtables/2023/ 
 
 
@@ -22,3 +24,16 @@ For example :
 
 ### Experiment
 We uploaded a sample test data consisted of multi-lingual json objects and a jupyter notebook file for masked prediction experiment.
+
+### Citation
+
+If you find this repository useful, please consider citing our paper:
+
+```bibtex
+@inproceedings{jung2025haetae,
+  title={HAETAE: In-domain Table Pretraining with Header Anchoring},
+  author={Jung, Woojun and Yoon, Susik},
+  booktitle={Proceedings of the 48th International ACM SIGIR Conference on Research and Development in Information Retrieval},
+  pages={3065--3069},
+  year={2025}
+}
